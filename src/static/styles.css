@@ -664,3 +664,69 @@ footer {
 #logout-button:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
+
+/* Social sharing */
+.share-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-light);
+}
+
+.share-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.share-buttons {
+  display: flex;
+  gap: 6px;
+}
+
+.share-btn {
+  background: var(--background);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+  line-height: 1;
+}
+
+.share-btn:hover {
+  background-color: var(--primary-light);
+  border-color: var(--primary-light);
+  color: white;
+  transform: scale(1.1);
+}
+
+.share-btn.share-twitter {
+  font-weight: bold;
+  font-size: 0.75rem;
+}
+
+.share-btn.share-facebook {
+  font-weight: bold;
+}
+
+/* Highlighted card when deep-linked from a share URL */
+.activity-card.highlighted {
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1);
+  animation: highlight-pulse 1.5s ease-out;
+}
+
+@keyframes highlight-pulse {
+  0% { box-shadow: 0 0 0 6px rgba(255, 111, 0, 0.5), 0 4px 12px rgba(0, 0, 0, 0.1); }
+  100% { box-shadow: 0 0 0 3px rgba(255, 111, 0, 0.3), 0 4px 12px rgba(0, 0, 0, 0.1); }
+}

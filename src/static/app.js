@@ -569,6 +569,15 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-section">
+        <span class="share-label">Share:</span>
+        <div class="share-buttons">
+          <button class="share-btn share-copy" data-activity="${name}" title="Copy link">🔗</button>
+          <button class="share-btn share-email" data-activity="${name}" data-description="${details.description}" title="Share via Email">✉️</button>
+          <button class="share-btn share-twitter" data-activity="${name}" data-description="${details.description}" title="Share on X / Twitter">𝕏</button>
+          <button class="share-btn share-facebook" data-activity="${name}" title="Share on Facebook">f</button>
+        </div>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -587,7 +596,74 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
+    // Add share button handlers
+    const activityUrl = buildActivityUrl(name);
+
+    activityCard.querySelector(".share-copy").addEventListener("click", () => {
+      navigator.clipboard.writeText(activityUrl).then(() => {
+        showMessage("Link copied to clipboard!", "success");
+      }).catch(() => {
+        showMessage("Could not copy link. Please copy the URL manually.", "error");
+      });
+    });
+
+    activityCard.querySelector(".share-email").addEventListener("click", (e) => {
+      const desc = e.currentTarget.dataset.description;
+      const subject = encodeURIComponent(`Check out this activity: ${name}`);
+      const body = encodeURIComponent(`Hi!\n\nI thought you might be interested in this extracurricular activity at Mergington High School:\n\n${name}\n${desc}\n\nLearn more: ${activityUrl}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+
+    activityCard.querySelector(".share-twitter").addEventListener("click", (e) => {
+      const desc = e.currentTarget.dataset.description;
+      const tweet = encodeURIComponent(`Check out "${name}" at Mergington High School! ${desc} ${activityUrl}`);
+      window.open(`https://twitter.com/intent/tweet?text=${tweet}`, "_blank", "noopener,noreferrer");
+    });
+
+    activityCard.querySelector(".share-facebook").addEventListener("click", () => {
+      const shareUrl = encodeURIComponent(activityUrl);
+      window.open(`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`, "_blank", "noopener,noreferrer");
+    });
+
     activitiesList.appendChild(activityCard);
+  }
+
+  // Build a shareable URL for a specific activity
+  function buildActivityUrl(activityName) {
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.searchParams.set("activity", activityName);
+    return url.toString();
+  }
+
+  // Highlight and scroll to an activity card by name
+  function highlightActivity(activityName) {
+    const cards = activitiesList.querySelectorAll(".activity-card");
+    cards.forEach((card) => {
+      const title = card.querySelector("h4");
+      if (title && title.textContent === activityName) {
+        card.classList.add("highlighted");
+        card.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  }
+
+  // Check for shared activity in URL on page load
+  function checkSharedActivity() {
+    const params = new URLSearchParams(window.location.search);
+    const sharedActivity = params.get("activity");
+    if (sharedActivity) {
+      // Wait for activities to render, then highlight
+      const tryHighlight = () => {
+        const cards = activitiesList.querySelectorAll(".activity-card");
+        if (cards.length > 0) {
+          highlightActivity(sharedActivity);
+        } else {
+          setTimeout(tryHighlight, 200);
+        }
+      };
+      setTimeout(tryHighlight, 300);
+    }
   }
 
   // Event listeners for search and filter
@@ -865,4 +941,5 @@ document.addEventListener("DOMContentLoaded", () => {
   checkAuthentication();
   initializeFilters();
   fetchActivities();
+  checkSharedActivity();
 });
