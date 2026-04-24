@@ -440,10 +440,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Apply difficulty filter
-      if (currentDifficulty) {
-        if (details.difficulty !== currentDifficulty) {
-          return;
-        }
+      if (currentDifficulty && details.difficulty && details.difficulty !== currentDifficulty) {
+        return;
       }
 
       // Apply search filter
