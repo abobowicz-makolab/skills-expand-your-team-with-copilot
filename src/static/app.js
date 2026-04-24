@@ -653,16 +653,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const sharedActivity = params.get("activity");
     if (sharedActivity) {
+      const INITIAL_HIGHLIGHT_DELAY_MS = 300;
+      const HIGHLIGHT_RETRY_INTERVAL_MS = 200;
+      const MAX_HIGHLIGHT_RETRIES = 15;
+      let retries = 0;
+
       // Wait for activities to render, then highlight
       const tryHighlight = () => {
         const cards = activitiesList.querySelectorAll(".activity-card");
         if (cards.length > 0) {
           highlightActivity(sharedActivity);
-        } else {
-          setTimeout(tryHighlight, 200);
+        } else if (retries < MAX_HIGHLIGHT_RETRIES) {
+          retries++;
+          setTimeout(tryHighlight, HIGHLIGHT_RETRY_INTERVAL_MS);
         }
       };
-      setTimeout(tryHighlight, 300);
+      setTimeout(tryHighlight, INITIAL_HIGHLIGHT_DELAY_MS);
     }
   }
 
